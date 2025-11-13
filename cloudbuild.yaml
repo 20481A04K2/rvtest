@@ -49,7 +49,9 @@ artifacts:
   objects:
     location: 'gs://video-processing123/artifacts/'
     paths:
-      - 'frame_data/**/*'  # Recursive: all files under frame_data
+      - 'frame_data/frames/**'    # Everything under frames/ recursively
+      - 'frame_data/predict/**'   # Everything under predict/ recursively
+      - 'result.json'             # The main result file
 
 # Options
 options:
