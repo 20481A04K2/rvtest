@@ -30,7 +30,7 @@ steps:
         ls -R frame_data/
         ls -la result.json 2>/dev/null || echo "result.json not found"
   
-  # Step 3: Upload secondary artifact (videoFrames/result.json)
+  # Step 3: Upload result.json separately
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'upload-videoFrames'
     entrypoint: 'bash'
@@ -49,9 +49,7 @@ artifacts:
   objects:
     location: 'gs://video-processing123/artifacts/'
     paths:
-      - 'frame_data/*'
-      - 'frame_data/frames/*'
-      - 'frame_data/predict/*'
+      - 'frame_data/**/*'  # Recursive: all files under frame_data
 
 # Options
 options:
