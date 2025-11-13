@@ -44,16 +44,16 @@ steps:
           echo "Warning: result.json not found"
         fi
 
-# Main artifacts - uploaded automatically at build completion
+# Main artifacts - specify FILE patterns, not directories
 artifacts:
   objects:
     location: 'gs://video-processing123/artifacts/'
     paths:
-      - 'frame_data/**'
-      - 'frame_data/frames/**'    # Everything under frames/ recursively
-      - 'frame_data/predict/**'   # Everything under predict/ recursively
-      - 'result.json'             # The main result file
+      - 'frame_data/frames/*'      # Files directly in frames/
+      - 'frame_data/predict/*'     # Files directly in predict/
+      - 'result.json'
 
 # Options
 options:
   logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
