@@ -53,4 +53,4 @@ artifacts:
 # Options
 options:
   logging: CLOUD_LOGGING_ONLY
-  machineType: 'N1_HIGHCPU_8'  # Adjust as needed       
+      
