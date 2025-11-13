@@ -30,9 +30,9 @@ steps:
         ls -R frame_data/
         ls -la result.json 2>/dev/null || echo "result.json not found"
   
-  # Step 3: Upload result.json separately
+  # Step 3: Upload result.json to videoFrames folder
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'upload-videoFrames'
+    id: 'upload-result-json'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -43,17 +43,25 @@ steps:
         else
           echo "Warning: result.json not found"
         fi
-
-# Main artifacts - specify FILE patterns, not directories
-artifacts:
-  objects:
-    location: 'gs://video-processing123/artifacts/'
-    paths:
-      - 'frame_data/frames/*'      # Files directly in frames/
-      - 'frame_data/predict/*'     # Files directly in predict/
-      - 'result.json'
+  
+  # Step 4: Upload frame_data directory with structure preserved
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'upload-frame-data'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if [ -d frame_data ]; then
+          echo "Uploading frame_data with directory structure..."
+          gsutil -m cp -r frame_data gs://video-processing123/artifacts/
+          echo "Successfully uploaded frame_data"
+          
+          echo "Verifying upload..."
+          gsutil ls gs://video-processing123/artifacts/frame_data/
+        else
+          echo "Warning: frame_data directory not found"
+        fi
 
 # Options
 options:
   logging: CLOUD_LOGGING_ONLY
-
