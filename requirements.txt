@@ -1,0 +1,9 @@
+# requirements.txt
+opencv-python
+numpy
+pandas
+scikit-image
+moviepy
+tensorflow  # if you're doing ML predictions
+torch       # optional if using PyTorch
+requests    # optional for API calls
