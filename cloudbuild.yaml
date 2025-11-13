@@ -1,0 +1,56 @@
+# cloudbuild.yaml
+steps:
+  # Step 1: Install dependencies
+  - name: 'python:3.11'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+  # Step 2: Run your Python script
+  - name: 'python:3.11'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        python3 run.py
+
+  # Step 3: Post-build - list files for verification
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Listing all generated files..."
+        ls -R frame_data/
+        ls -la result.json 2>/dev/null || echo "result.json not found"
+
+  # Step 4: Upload secondary artifact (videoFrames/result.json)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'upload-videoFrames'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if [ -f result.json ]; then
+          gsutil cp result.json gs://YOUR_BUCKET_NAME/artifacts/videoFrames/result.json
+          echo "Successfully uploaded result.json"
+        else
+          echo "Warning: result.json not found"
+        fi
+
+# Main artifacts - uploaded automatically at build completion
+artifacts:
+  objects:
+    location: 'gs://YOUR_BUCKET_NAME/artifacts/'
+    paths:
+      - 'frame_data/*'
+      - 'frame_data/frames/*'
+      - 'frame_data/predict/*'
+
+# Options
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'N1_HIGHCPU_8'  # Adjust as needed       
