@@ -35,7 +35,7 @@ steps:
       - '-c'
       - |
         if [ -f result.json ]; then
-          gsutil cp result.json gs://video-processing/artifacts/videoFrames/result.json
+          gsutil cp result.json gs://video-processing123/artifacts/videoFrames/result.json
           echo "Successfully uploaded result.json"
         else
           echo "Warning: result.json not found"
@@ -44,7 +44,7 @@ steps:
 # Main artifacts - uploaded automatically at build completion
 artifacts:
   objects:
-    location: 'gs://video-processing/artifacts/'
+    location: 'gs://video-processing123/artifacts/'
     paths:
       - 'frame_data/*'
       - 'frame_data/frames/*'
