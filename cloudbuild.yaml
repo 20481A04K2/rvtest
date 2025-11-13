@@ -1,24 +1,26 @@
 # cloudbuild.yaml
 steps:
-  # Step 1: Install dependencies
+  # Step 1: Install dependencies AND run script in same container
   - name: 'python:3.11'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
+        echo "Installing system dependencies..."
         apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
+        
+        echo "Upgrading pip..."
         pip install --upgrade pip
+        
+        echo "Installing Python packages..."
         pip install -r requirements.txt
-
-  # Step 2: Run your Python script
-  - name: 'python:3.11'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
+        
+        echo "Running Python script..."
         python3 run.py
-
-  # Step 3: Post-build - list files for verification
+        
+        echo "Build completed successfully!"
+  
+  # Step 2: Post-build - list files for verification
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
@@ -27,8 +29,8 @@ steps:
         echo "Listing all generated files..."
         ls -R frame_data/
         ls -la result.json 2>/dev/null || echo "result.json not found"
-
-  # Step 4: Upload secondary artifact (videoFrames/result.json)
+  
+  # Step 3: Upload secondary artifact (videoFrames/result.json)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'upload-videoFrames'
     entrypoint: 'bash'
@@ -54,4 +56,3 @@ artifacts:
 # Options
 options:
   logging: CLOUD_LOGGING_ONLY
-      
